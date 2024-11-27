@@ -1,30 +1,39 @@
-import {useState} from "react";
+import { useState } from "react";
 import axios from "axios";
-import {Text, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
+import { Text, TextInput, TouchableOpacity, View, StyleSheet, Alert } from "react-native";
 import Header from "../components/Header/header";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // Importando o tipo de navegação
+import { useAuth } from "../Context/authContext"; // Importando o contexto de autenticação
+import { RootStackParamList } from "../types/navigation"; // Supondo que você tenha esse arquivo com a definição de tipos
 
-const CreatePostScreen = ({ navigation }) => {
+// Tipando a prop navigation
+type CreatePostScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreatePostScreen'>;
+
+interface Props {
+    navigation: CreatePostScreenNavigationProp;
+}
+
+const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [author, setAuthor] = useState('1');//author id fixo para teste
+    const [author, setAuthor] = useState('1'); // ID fixo de autor para teste, no futuro deve ser pego do contexto
+    const { auth } = useAuth(); // Obtendo o autor a partir do contexto de autenticação (usuário logado)
 
     const isFormValid = () => {
-        if(!title.trim()){
-        alert('Por favor, preencha o campo título');
-        return false;
-    }
-    if (!content.trim()) {
-        alert('Por favor, preencha o campo conteúdo');
-        return false;
-    }
-    if (!author.trim()) {
-        alert('Por favor, preencha o campo Autor');
-        return false;
-    }
-
-    return true;
-
-}
+        if (!title.trim()) {
+            alert('Por favor, preencha o campo título');
+            return false;
+        }
+        if (!content.trim()) {
+            alert('Por favor, preencha o campo conteúdo');
+            return false;
+        }
+        if (!author.trim()) {
+            alert('Por favor, preencha o campo Autor');
+            return false;
+        }
+        return true;
+    };
 
     const handleSubmit = async () => {
         if (!isFormValid()) {
@@ -32,30 +41,34 @@ const CreatePostScreen = ({ navigation }) => {
         }
 
         try {
-            await axios.post('https://jsonplaceholder.typicode.com/posts', {
+            const postData = {
                 title,
                 body: content,
-                userId: author,
-            });
+                userId: author, // O ID do autor aqui está fixo para teste, mas você pode usar auth.userId quando integrar com backend
+            };
 
-            alert('Post criado com sucesso!');
+            // Enviar dados para o backend real (por enquanto usando jsonplaceholder)
+            const response = await axios.post('https://jsonplaceholder.typicode.com/posts', postData);
+
+            console.log('Post criado com sucesso:', response.data);
+            Alert.alert('Sucesso', 'Post criado com sucesso!');
             navigation.navigate('PostList');
         } catch (error) {
-            console.error('Erro ao criar post', error);
-            alert('Erro ao criar o post. Tente novamente.');
+            console.error('Erro ao criar post:', error);
+            Alert.alert('Erro', 'Erro ao criar o post. Tente novamente.');
         }
     };
 
     return (
         <View style={styles.container}>
-            <Header/>
+            <Header />
             <Text style={styles.label}>Título</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Título do Post"
                 value={title}
                 onChangeText={setTitle}
-                />
+            />
             <Text style={styles.label}>Conteúdo</Text>
             <TextInput
                 style={styles.input}
@@ -101,7 +114,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     button: {
-        backgroundColor:'#007bff',
+        backgroundColor: '#007bff',
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
@@ -113,4 +126,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CreatePostScreen
+export default CreatePostScreen;

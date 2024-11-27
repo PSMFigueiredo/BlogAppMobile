@@ -1,11 +1,16 @@
-import {useEffect, useState} from "react";
-import axios from "axios";
-import PostList from "./PostList";
-import {Text, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
-import Header from "../components/Header/header";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import Header from '../components/Header/header';
+import { EditPostScreenNavigationProp, EditPostScreenRouteProp } from '../types/navigation'; // Importando os tipos corretos
 
-const EditPostScreen = ({ route, navigation }) => {
-    const { postId } = route.params;
+interface EditPostScreenProps {
+    navigation: EditPostScreenNavigationProp;
+    route: EditPostScreenRouteProp;
+}
+
+const EditPostScreen: React.FC<EditPostScreenProps> = ({ route, navigation }) => {
+    const { postId } = route.params; // Obtendo o postId da rota
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [author, setAuthor] = useState('1');
@@ -15,7 +20,7 @@ const EditPostScreen = ({ route, navigation }) => {
             const response = await axios.get(`https://jsonplaceholder.typicode.com/posts/${postId}`);
             const post = response.data;
             setTitle(post.title);
-            setContent(post.content);
+            setContent(post.body);  // Aqui você deve usar 'body' e não 'content'
             setAuthor(post.userId.toString());
         } catch (error) {
             console.error('Erro ao buscar detalhes do post', error);
@@ -24,23 +29,23 @@ const EditPostScreen = ({ route, navigation }) => {
 
     useEffect(() => {
         fetchPostDetails();
-    }, []);
+    }, [postId]);
 
     const handleSubmit = async () => {
-        if (!title.trim() || !content.trim()){
+        if (!title.trim() || !content.trim()) {
             alert('Por favor, preencha todos os campos');
-            return
+            return;
         }
 
         try {
-            await axios.put(`https://jsonplaceholder.typicode.com/posts/${postId}`,{
+            await axios.put(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
                 title,
-                body: content,
+                body: content, // "body" deve ser utilizado, já que é o campo retornado pela API
                 userId: author,
             });
 
             alert('Post atualizado com sucesso!');
-            navigation.navigate('PostList')
+            navigation.navigate('PostList');
         } catch (error) {
             console.error('Erro ao atualizar o post', error);
             alert('Erro ao atualizar o post. Tente novamente.');
@@ -49,7 +54,7 @@ const EditPostScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Header/>
+            <Header />
             <Text style={styles.label}>Título</Text>
             <TextInput
                 style={styles.input}
@@ -66,7 +71,6 @@ const EditPostScreen = ({ route, navigation }) => {
                 multiline
                 numberOfLines={4}
             />
-
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Atualizar Post</Text>
             </TouchableOpacity>

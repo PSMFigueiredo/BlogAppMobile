@@ -1,0 +1,202 @@
+BlogAppMobile/
+│
+├── expo/
+│   ├── devices.json
+│   └── README.md
+│
+├── .idea/                  # Configurações do IDE (WebStorm/IntelliJ)
+│   ├── caches
+│   ├── .gitignore
+│   ├── BlogAppMobile.iml
+│   ├── misc.xml
+│   ├── modules.xml
+│   └── vcs.xml
+│
+├── assets/                 # Imagens e ícones usados no app
+│   ├── adaptive-icon.png
+│   ├── favicon.png
+│   ├── icon.png
+│   └── splash.png
+│
+├── node_modules/           # Dependências do projeto
+│
+├── src/                    # Código-fonte da aplicação
+│   ├── components/         # Componentes reutilizáveis
+│   │   ├── Header/
+│   │   │   └── header.tsx  # Componente Header
+│   │   ├── Hooks/
+│   │   │   └── useWindowDimensions.tsx  # Hook customizado para dimensões da janela
+│   │   ├── Login/
+│   │   │   └── Login.tsx  # Componente de Login
+│   │   ├── components.iml
+│   │   └── PostItem.tsx   # Componente para exibição de posts
+│   │
+│   ├── Context/            # Context API para gerenciamento de estado
+│   │   ├── authContext.tsx          # Contexto de autenticação
+│   │   ├── professorContext.tsx     # Contexto para professores
+│   │   └── WindowDimensionsContext.tsx # Contexto para dimensões da janela
+│   │
+│   ├── routes/             # Definições de rotas
+│   │   ├── app.routes.tsx  # Arquivo de rotas principais
+│   │   └── index.tsx       # Entrypoint de rotas
+│   │
+│   ├── screens/            # Telas da aplicação
+│   │   ├── CreatePostScreen.tsx
+│   │   ├── EditPostScreen.tsx
+│   │   ├── HomeScreen.tsx
+│   │   ├── LoginScreen.tsx
+│   │   ├── PostDetailScreen.tsx
+│   │   ├── PostList.tsx
+│   │   └── PrincipalScreen.tsx
+│   │
+│   ├── services/           # Funções auxiliares de API
+│   │   ├── api.ts
+│   │   └── apiFunctions.ts
+│   │
+├── .gitignore
+├── app.json                # Configuração do Expo
+├── App.tsx                 # Arquivo principal do React Native
+├── babel.config.js         # Configuração do Babel
+├── package-lock.json
+├── package.json            # Gerenciamento de pacotes do projeto
+├── tsconfig.json           # Configuração do TypeScript
+└── yarn.lock               # Bloqueio de versões com Yarn
+
+=================================
+
+Arquivo App.tsx
+
+Alterações:
+
+1 - useAuth: Consumimos o contexto de autenticação (via useAuth) para verificar se o usuário está autenticado ou não. Esse estado determina se a tela inicial será o PostList ou o Login.
+
+2 - isReady: Utilizamos uma variável isReady para garantir que a navegação só ocorra após a inicialização do estado de autenticação. Isso pode ser útil quando o estado de autenticação é carregado de um armazenamento persistente (como o AsyncStorage).
+
+3 - initialRouteName: A propriedade initialRouteName é configurada para alternar entre a tela de login ou a lista de posts dependendo do estado de autenticação. Se o usuário estiver autenticado, ele será direcionado automaticamente para o PostList.
+
+Integração com Backend
+
+- Login: No arquivo authContext.tsx, ao implementar a chamada real de login via userLoginApi, poderemos substituir a parte do código onde estamos simulando os dados (mock)com dados reais vindos da API.
+
+- Verificação de Token: A lógica de verificação de token (expiração) já está implementada. Quando a API for integrada, o comportamento vai continuar o mesmo, mas com dados reais.
+
+=================================
+
+Arquivo authContext.tsx
+
+Alterações:
+
+Manter o estado de autenticação atualizado: O isAuthenticated já está sendo usado no código de navegação para decidir qual tela exibir. Portanto, é importante garantir que este estado seja atualizado corretamente sempre que o auth mudar (por exemplo, após um login ou logout).
+
+Exportar o estado do auth corretamente: Precisamos garantir que, ao fazer o login, a autenticação seja armazenada corretamente no contexto e ao fazer o logout, as rotas que exigem login sejam redirecionadas para a tela de login.
+
+Correção na lógica de verificação de expiração do token: No seu código, o isTokenExpired já está verificando a expiração do token. Isso é bom, mas podemos garantir que, ao carregar o token do AsyncStorage, o estado de autenticação seja ajustado corretamente.
+
+=================================
+
+Arquivo api.ts
+
+Alterações:
+
+
+
+=================================
+
+Arquivo apiFunctions.ts
+
+Algumas melhorias:
+
+
+
+=================================
+
+Arquivo app.routes.tsx
+
+Alterações simples
+
+Nomes das rotas: nomes simples e diretos para as rotas, como "Login" e "Home". Assim, fica mais claro para a navegação entre telas.
+
+Tela de Login e Home: O nome da rota usada no name do Screen deve ser um identificador simples para facilitar a navegação e ajudar a evitar confusão, tornando o código mais legível.
+
+Adição do tipo RootStackParamList - é um tipo que podemos definir em um arquivo de rotas para mapear as telas e parâmetros da navegação, garantindo que o TypeScript entenda o que cada tela pode esperar e se está passando o parâmetro correto.
+
+=================================
+
+Arquivo LoginScreen.tsx
+
+Alterações:
+
+- Credenciais fixas: A verificação de email e senha foi mantida provisoriamente, com admin@example.com e 123456.
+
+- Uso do useAuth: Agora, a função de login do contexto authContext está sendo utilizada, o que simula a autenticação e armazena o token JWT no contexto e AsyncStorage (de forma simulada, até que o backend seja configurado).
+
+- Redirecionamento: Se o login for bem-sucedido, o usuário será redirecionado para a página de PostList.
+
+Integração com Backend:
+
+- Quando estiver pronto para integrar com o backend real, a função login() será substituída pela chamada real à API (como já feito com userLoginApi()).
+
+- O token será obtido pela resposta da API e armazenado corretamente no AuthContext.
+
+=================================
+
+Arquivo HomeScreen.tsx
+
+Alterações:
+
+
+
+=================================
+
+Arquivo PostItem.tsx
+
+
+
+=================================
+
+Arquivo CreatePostScreen.tsx
+
+Alterações
+
+1 - Tipagem da navegação:
+
+Adicionada a tipagem NativeStackNavigationProp do @react-navigation/native-stack para garantir que a navegação seja usada corretamente.
+Importado a StackParamList para garantir que a navegação para outras telas seja realizada de forma segura, com o tipo correto.
+
+2 - Tipagem dos estados:
+
+O estado de title, content e author foi tipado como string, uma vez que esses campos recebem valores de texto.
+
+3 - Validação de formulário:
+
+A função isFormValid agora retorna um tipo boolean, que facilita a leitura e evita qualquer ambiguidade. Ela verifica se todos os campos foram preenchidos corretamente antes de permitir o envio do formulário.
+
+Vantagens desse ajuste:
+
+- Segurança de tipo: O TypeScript agora pode verificar automaticamente se você está passando dados corretamente entre as telas, evitando erros de execução em tempo de navegação.
+- Facilidade de manutenção: Com a navegação tipada, qualquer mudança nas rotas ou parâmetros das telas será refletida imediatamente com erros de compilação, tornando o código mais seguro e fácil de manter.
+- Validação clara: O código de validação do formulário está mais claro e robusto, evitando que o formulário seja enviado com campos obrigatórios vazios.
+
+=================================
+
+Arquivo PostDetailScreen.tsx
+
+Alterações
+
+
+
+=================================
+
+Arquivo navigation.ts
+
+Responsável apenas por definir os tipos das rotas da aplicação e, possivelmente, exportar algumas constantes relacionadas à navegação, mas não terá JSX ou componentes React.
+
+=================================
+
+Arquivo EditPostScreen.tsx
+
+Tipagem do navigation e route: A navigation e route agora são tipadas com os tipos definidos no arquivo navigation.ts. A EditPostScreenProps especifica que a tela deve esperar essas propriedades tipadas, o que resolve o erro do TypeScript.
+
+Correção do campo content: O JSON retornado pela API jsonplaceholder.typicode.com tem o campo body e não content. Fiz a alteração para garantir que você está acessando a propriedade correta.
+
+useEffect e postId: A dependência postId foi adicionada ao useEffect para garantir que a tela sempre busque os detalhes do post correto quando o ID mudar (caso a tela seja renderizada novamente com um postId diferente).

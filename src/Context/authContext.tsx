@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { userLoginApi } from "../services/api";
-import jwtDecode from "jwt-decode";
-import { Auth } from "../types/Token";
+import jwt_decode from "jwt-decode";
+import { Auth, RefreshToken } from "../types/Token"; // Certifique-se de que essas interfaces estejam bem definidas
 
 // Interface do contexto de autenticação
 export interface AuthContextType {
@@ -26,8 +25,8 @@ export const useAuth = (): AuthContextType => {
 
 // AuthProvider para gerenciar a autenticação
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-                                                                          children,
-                                                                      }) => {
+    children,
+}) => {
     const [auth, setAuth] = useState<Auth | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
@@ -58,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const isTokenExpired = (token: string): boolean => {
         if (!token) return true;
         try {
-            const decodedToken: any = jwtDecode(token);
+            const decodedToken: any = jwt_decode(token);
             const currentTime = Date.now() / 1000;
             return decodedToken.exp < currentTime;
         } catch (error) {
@@ -67,31 +66,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     };
 
-    // Função de login
+    // Função de login (temporário com e-mail e senha fixos)
     const login = async (email: string, password: string): Promise<Auth> => {
-        const res = await userLoginApi({ email, password });
-        if (res) {
+        // Login hardcoded (substituir com a API quando disponível)
+        const validEmail = "test@domain.com";
+        const validPassword = "123456";
+
+        if (email === validEmail && password === validPassword) {
+            // Simulando uma resposta de login bem-sucedido
             const authResponse: Auth = {
-                token: res.data.token,
+                token: "mocked-jwt-token", // Mock do token
                 refreshToken: {
-                    createdAt: res.data.refreshToken.createdAt,
-                    expiresIn: res.data.refreshToken.expiresIn,
-                    id: res.data.refreshToken.id,
-                    userId: res.data.refreshToken.userId,
+                    createdAt: "2024-01-01T00:00:00Z", // Mock do createdAt como string (ISO 8601)
+                    expiresIn: "3600", // Mock de tempo de expiração em segundos
+                    id: "mocked-refresh-token-id", // Mock do id do refresh token
+                    userId: "mocked-user-id", // Mock do userId
                 },
             };
             setAuth(authResponse);
             setIsAuthenticated(true);
+            await AsyncStorage.setItem("auth", JSON.stringify(authResponse)); // Salva o token no AsyncStorage
             return authResponse;
+        } else {
+            throw new Error("Credenciais inválidas");
         }
-        throw new Error('Falha no login');
     };
 
     // Função de logout
     const logout = async () => {
         setAuth(null);
         setIsAuthenticated(false);
-        await AsyncStorage.removeItem("auth");
+        await AsyncStorage.removeItem("auth"); // Remove as credenciais do AsyncStorage
     };
 
     return (
