@@ -5,90 +5,59 @@ import PostDetailScreen from "./PostDetailScreen";
 import Header from "../components/Header/header";
 import { MaterialIcons } from '@expo/vector-icons'
 import { useAuth } from "../Context/authContext";
-import { deletePostApi, getPostsAdminApi, getPostsApi } from "../services/apiFunctions";
+import { deletePostApi, deleteStudentApi, getPostsAdminApi, getPostsApi, getStudentsApi } from "../services/apiFunctions";
 import { PostListProps } from "../types/postList";
 import { Post } from "../types/types-post";
+import { Student } from "../types/Student";
 
-const PostList = ({ navigation }) => {
-    const [posts, setPosts] = useState<Post[] | []>([]);
+const StudentList = ({ navigation }) => {
+    const [students, setStudents] = useState<Student[] | []>([]);
     const { auth, setAuth } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
-    const [data, setData] = useState<Post[] | []>(posts.slice(0, 1));
+    const [data, setData] = useState<Student[] | []>(students.slice(0, 1));
 
     const fetchPosts = async () => {
         if (auth) {
             if(auth.user.role == "PROFESSOR"){
-                getPostsAdminApi(auth.token).then((result) => {
-                    const postsResponse: Post[] = result.data.posts.map((post: Post) => {
+                getStudentsApi(auth.token).then((result) => {
+                    const studentsResponse: Student[] = result.data.students.map((student: Student) => {
                         return (
                             {
-                                id: post.id,
-                                title: post.title,
-                                content: post.content,
-                                author: {
-                                    id: post.author.id,
-                                    name: post.author.name,
-                                    email: post.author.email
-                                },
-                                class: {
-                                    id: post.class.id,
-                                    name: post.class.name
-                                },
-                                published: post.published
+                                id: student.id,
+                                ra: student.ra,
+                                birthDate: student.birthDate,
+                                user: {
+                                    id: student.user.id,
+                                    name: student.user.name,
+                                    email: student.user.email
+                                }
                             }
                         )
                     });
-                    setPosts(postsResponse);
+                    setStudents(studentsResponse);
                 }).catch((error) => {
-                    alert("Erro ao buscar posts");
-                });
-            }else{
-                getPostsApi(auth.token).then((result) => {
-                    const postsResponse: Post[] = result.data.posts.map((post: Post) => {
-                        return (
-                            {
-                                id: post.id,
-                                title: post.title,
-                                content: post.content,
-                                author: {
-                                    id: post.author.id,
-                                    name: post.author.name,
-                                    email: post.author.email
-                                },
-                                class: {
-                                    id: post.class.id,
-                                    name: post.class.name
-                                },
-                                published: true
-                            }
-                        )
-                    });
-                    setPosts(postsResponse);
-                }).catch((error) => {
-                    alert("Erro ao buscar posts");
+                    alert("Erro ao buscar alunos");
                 });
             }
-
         }
     };
 
-    const renderItem: ListRenderItem<Post> = ({ item }) => (
+    const renderItem: ListRenderItem<Student> = ({ item }) => (
         <View style={styles.postItem}>
             <TouchableOpacity
                 style={styles.postCard}
-                onPress={() => navigation.navigate('Ver Post', { item: item })}
+                onPress={() => navigation.navigate('Criar Aluno', { item: item })}
             >
-                <Text style={styles.postTitle}>{item.title}</Text>
-                <Text style={styles.postContent}>{item.content.length > 80 ? `${item.content.substring(0, 80)}...` : item.content}</Text>
-                <Text style={styles.postAuthor}>Autor: {item.author.name}</Text>
-                <Text style={styles.postAuthor}>Turma: {item.class.name}</Text>
+                <Text style={styles.postTitle}>{item.user.name}</Text>
+                <Text style={styles.postContent}>{item.ra}</Text>
+                <Text style={styles.postContent}>{item.user.email}</Text>
             </TouchableOpacity>
 
             {auth && auth.user.role == "PROFESSOR" &&
                 <View style={styles.actionBar}>
                     <TouchableOpacity
                         style={[styles.button, styles.editButton]}
-                        onPress={() => navigation.navigate('Criar Post', { item: item })}
+                        onPress={() => navigation.navigate('Criar Aluno', { item: item })}
                     >
                         <MaterialIcons name={'edit-note'} size={24} color={"#fff"} />
                         <Text style={styles.buttonText}>Editar</Text>
@@ -109,7 +78,7 @@ const PostList = ({ navigation }) => {
         if(loading) return
 
         setLoading(true);
-        const newData = posts.slice(data.length, data.length + 1);
+        const newData = students.slice(data.length, data.length + 1);
         setTimeout(() => {
             setData([...data, ...newData]);
             setLoading(false);
@@ -120,14 +89,14 @@ const PostList = ({ navigation }) => {
         fetchPosts()
     });
 
-    const handleDelete = (postId: string) => {
+    const handleDelete = (studentId: string) => {
         if(auth){
-            deletePostApi(postId, auth.token).then((result) => {
+            deleteStudentApi(studentId, auth.token).then((result) => {
                 if(result.data.postId){
-                    alert("Post deletado com sucesso!");
+                    alert("Aluno deletado com sucesso!");
                 }
             }).catch((error) => {
-                alert("Erro ao deletar turma");
+                alert("Erro ao deletar aluno");
             });
         }
     }
@@ -139,14 +108,14 @@ const PostList = ({ navigation }) => {
 
                 {
                     auth && auth.user.role == "PROFESSOR" ?
-                        <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate('Criar Post')}>
-                            <Text style={styles.createButtonText}>Criar novo post</Text>
+                        <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate('Criar Aluno')}>
+                            <Text style={styles.createButtonText}>Cadastrar novo aluno</Text>
                         </TouchableOpacity>
                         : null
                 }
 
                 <FlatList
-                    data={posts}
+                    data={students}
                     keyExtractor={(item) => item.id}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
@@ -241,4 +210,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default PostList
+export default StudentList
