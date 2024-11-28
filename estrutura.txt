@@ -1,0 +1,77 @@
+BlogAppMobile/
+│
+├── expo/
+│   ├── devices.json
+│   └── README.md
+│
+├── .idea/                  # Configurações do IDE (WebStorm/IntelliJ)
+│   ├── caches
+│   ├── .gitignore
+│   ├── BlogAppMobile.iml
+│   ├── misc.xml
+│   ├── modules.xml
+│   └── vcs.xml
+│
+├── assets/                 # Imagens e ícones usados no app
+│   ├── adaptive-icon.png
+│   ├── favicon.png
+│   ├── icon.png
+│   └── splash.png
+│
+├── node_modules/           # Dependências do projeto
+│
+├── src/                    # Código-fonte da aplicação
+│   ├── components/         # Componentes reutilizáveis
+│   │   ├── CustomDrawer/
+│   │   │   └── CustomDrawer.tsx  # Componente Menu de navegação lateral
+│   │   ├── Header/
+│   │   │   └── header.tsx  # Componente Header
+│   │   ├── Hooks/
+│   │   │   └── useWindowDimensions.tsx  # Hook customizado para dimensões da janela
+│   │   ├── Login/
+│   │   │   └── Login.tsx  # Componente de Login
+│   │   ├── RadioButton/
+│   │   │   └── Login.tsx  # Componente Seletor de opções
+│   │   ├── components.iml
+│   │   └── PostItem.tsx   # Componente para exibição de posts
+│   │
+│   ├── Context/            # Context API para gerenciamento de estado
+│   │   ├── authContext.tsx          # Contexto de autenticação
+│   │   ├── professorContext.tsx     # Contexto para professores
+│   │   └── WindowDimensionsContext.tsx # Contexto para dimensões da janela
+│   │
+│   ├── routes/             # Definições de rotas
+│   │   ├── app.routes.tsx  # Arquivo de rotas principais
+│   │   ├── drawer.routes.tsx  # Rotas do navegador lateral
+│   │   └── index.tsx       # Entrypoint de rotas
+│   │   ├── stack.routes.tsx  # Rotas do navegador em pilha
+│   │
+│   ├── screens/            # Telas da aplicação
+│   │   ├── ClassesScreen.tsx           # Listagem de turmas
+│   │   ├── CreateAccountScreen.tsx     # Cadastro na aplicação
+│   │   ├── CreateClassScreen.tsx       # Criação de turmas
+│   │   ├── CreateProfessorScreen.tsx   # Criação e edição de professores
+│   │   ├── CreateStudentScreen.tsx     # Criação e edição de alunos
+│   │   ├── LoginScreen.tsx             # Login
+│   │   ├── MyProfileScreen.tsx         # Meu perfil
+│   │   ├── PostDetailScreen.tsx        # Detalhes do post
+│   │   ├── PostList.tsx                # Listagem de posts
+│   │   ├── ProfessorList.tsx           # Listagem de professores
+│   │   └── StudentList.tsx             # Listagem de alunos
+│   │
+│   ├── services/           # Funções auxiliares de API
+│   │   ├── api.ts
+│   │   └── apiFunctions.ts # conexão com o back-end
+│   │
+├── .gitignore
+├── app.json                # Configuração do Expo
+├── App.tsx                 # Arquivo principal do React Native
+├── babel.config.js         # Configuração do Babel
+├── package-lock.json
+├── package.json            # Gerenciamento de pacotes do projeto
+├── tsconfig.json           # Configuração do TypeScript
+└── yarn.lock               # Bloqueio de versões com Yarn
+
+=================================
+
+Arquivo App.tsx

@@ -1,0 +1,28 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Attach to Hermes application",
+            "request": "attach",
+            "type": "reactnativedirect",
+            "cwd": "${workspaceFolder}",
+            "address": "exp://192.168.18.5:8081",
+            "port": 8081
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Iniciar o Programa",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${file}",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ]
+        }
+    ]
+}
