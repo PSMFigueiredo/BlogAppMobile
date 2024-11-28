@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, TouchableOpacity, View, FlatList, StyleSheet, ListRenderItem } from "react-native";
+import { Text, TouchableOpacity, View, FlatList, StyleSheet, ListRenderItem, Alert } from "react-native";
 import PostDetailScreen from "./PostDetailScreen";
 import Header from "../components/Header/header";
 import { MaterialIcons } from '@expo/vector-icons'
@@ -34,9 +34,9 @@ const StudentList = ({ navigation }) => {
                             }
                         )
                     });
-                    setStudents(studentsResponse);
+                    setStudents(studentsResponse.reverse());
                 }).catch((error) => {
-                    alert("Erro ao buscar alunos");
+                    Alert.alert("Erro", "Erro ao buscar alunos");
                 });
             }
         }
@@ -93,10 +93,10 @@ const StudentList = ({ navigation }) => {
         if(auth){
             deleteStudentApi(studentId, auth.token).then((result) => {
                 if(result.data.postId){
-                    alert("Aluno deletado com sucesso!");
+                    Alert.alert("Sucesso", "Aluno deletado com sucesso!");
                 }
             }).catch((error) => {
-                alert("Erro ao deletar aluno");
+                Alert.alert("Erro", "Erro ao deletar aluno");
             });
         }
     }

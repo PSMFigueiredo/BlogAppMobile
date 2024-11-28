@@ -2,7 +2,7 @@ import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert 
 import Header from "../components/Header/header";
 import { useEffect, useState } from "react";
 import RadioButton from "../components/RadioButton/RadioButton";
-import { createProfessorApi, createStudentApi, getProfessorByUserApi, getStudentByUserApi, updateProfessorApi } from "../services/apiFunctions";
+import { createProfessorApi, createStudentApi, getProfessorByUserApi, getStudentByUserApi, updateProfessorApi, updateStudentApi } from "../services/apiFunctions";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs, { Dayjs } from "dayjs";
 import timezone from "dayjs/plugin/timezone";
@@ -73,7 +73,7 @@ const MyProfileScreen: React.FC = ({ navigation }) => {
                 setStudent(studentResponse);
 
             }).catch((error) => {
-                alert("Não foi possível carregar os dados");
+                Alert.alert("Erro", "Não foi possível carregar os dados");
             });
         }
     }
@@ -92,7 +92,7 @@ const MyProfileScreen: React.FC = ({ navigation }) => {
                 };
                 setProfessor(professorResponse);
             }).catch((error) => {
-                alert("Erro ao buscar dados");
+                Alert.alert("Erro", "Erro ao buscar dados");
             });
         }
     }
@@ -129,47 +129,47 @@ const MyProfileScreen: React.FC = ({ navigation }) => {
 
     const handleUpdateAccount = () => {
         if (name == '' || name == undefined || name == null) {
-            alert("Preencha o campo: Nome");
+            Alert.alert("Aviso", "Preencha o campo: Nome");
         }
         if (email == '' || email == undefined || email == null) {
-            alert("Preencha o campo: Email");
+            Alert.alert("Aviso", "Preencha o campo: Email");
         }
-        if (password == '' || password == undefined || password == null) {
-            alert("Preencha o campo: Senha");
-        }
-        if (auth?.user.role == "PROFESSOR") {
-            if (registerNumber == '' || registerNumber == undefined || registerNumber == null) {
-                alert("Preencha o campo: Nº de registro");
+        if(auth){
+
+            if (auth.user.role == "PROFESSOR") {
+                if (registerNumber == '' || registerNumber == undefined || registerNumber == null) {
+                    Alert.alert("Aviso", "Preencha o campo: Nº de registro");
+                }
+                if (professor) {
+                    updateProfessorApi(professor.id, auth.token, {
+                        professorNumber: Number(registerNumber),
+                        name: name,
+                        email: email,
+                        password: password
+                    }).then((result) => {
+                        Alert.alert(`Alterações salvas com sucesso!`);
+                    }).catch((error) => {
+                        Alert.alert("Erro", "Não foi possível salvar as alterações");
+                    })
+                }
+            } else {
+                if (registerNumber == '' || registerNumber == undefined || registerNumber == null) {
+                    Alert.alert("Aviso", "Preencha o campo: RA");
+                }
+                if(student){
+                    updateStudentApi(student.id, auth.token, {
+                        ra: registerNumber,
+                        name: name,
+                        birthDate: formatDate(birthDate.toString()),
+                        email: email,
+                        password: password
+                    }).then((result) => {
+                        Alert.alert("Sucesso", 'Alterações salvas com sucesso!');
+                    }).catch((error) => {
+                        Alert.alert("Erro", "Não foi possível salvar as alterações");
+                    })
+                }
             }
-            if (professor) {
-                updateProfessorApi(professor.id, {
-                    professorNumber: registerNumber,
-                    name: name,
-                    email: email,
-                    password: password
-                }).then((result) => {
-                    alert(`Usuário criado com sucesso! ${result.toString()}`);
-                    navigation.navigate('Login');
-                }).catch((error) => {
-                    alert(error.message);
-                })
-            }
-        } else {
-            if (registerNumber == '' || registerNumber == undefined || registerNumber == null) {
-                alert("Preencha o campo: RA");
-            }
-            createStudentApi({
-                ra: registerNumber,
-                name: name,
-                birthDate: formatDate(birthDate.toString()),
-                email: email,
-                password: password
-            }).then((result) => {
-                alert('Usuário criado com sucesso!');
-                navigation.navigate('Login');
-            }).catch((error) => {
-                alert(error.message);
-            })
         }
     };
 

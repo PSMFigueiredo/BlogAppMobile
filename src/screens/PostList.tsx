@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, TouchableOpacity, View, FlatList, StyleSheet, ListRenderItem } from "react-native";
+import { Text, TouchableOpacity, View, FlatList, StyleSheet, ListRenderItem, Alert } from "react-native";
 import PostDetailScreen from "./PostDetailScreen";
 import Header from "../components/Header/header";
 import { MaterialIcons } from '@expo/vector-icons'
@@ -8,16 +8,20 @@ import { useAuth } from "../Context/authContext";
 import { deletePostApi, getPostsAdminApi, getPostsApi } from "../services/apiFunctions";
 import { PostListProps } from "../types/postList";
 import { Post } from "../types/types-post";
+import { TextInput } from "react-native-gesture-handler";
 
 const PostList = ({ navigation }) => {
     const [posts, setPosts] = useState<Post[] | []>([]);
     const { auth, setAuth } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
+    const [filteredPosts, setFilteredPosts] = useState<Post[] | []>([]);
     const [data, setData] = useState<Post[] | []>(posts.slice(0, 1));
+    const [searchTerm, setSearchTerm] = useState('');
+    const [loadPosts, setLoadPosts] = useState<boolean>(true);
 
     const fetchPosts = async () => {
         if (auth) {
-            if(auth.user.role == "PROFESSOR"){
+            if (auth.user.role == "PROFESSOR") {
                 getPostsAdminApi(auth.token).then((result) => {
                     const postsResponse: Post[] = result.data.posts.map((post: Post) => {
                         return (
@@ -38,11 +42,11 @@ const PostList = ({ navigation }) => {
                             }
                         )
                     });
-                    setPosts(postsResponse);
+                    setPosts(postsResponse.reverse());
                 }).catch((error) => {
-                    alert("Erro ao buscar posts");
+                    Alert.alert("Erro", "Erro ao buscar posts");
                 });
-            }else{
+            } else {
                 getPostsApi(auth.token).then((result) => {
                     const postsResponse: Post[] = result.data.posts.map((post: Post) => {
                         return (
@@ -63,9 +67,9 @@ const PostList = ({ navigation }) => {
                             }
                         )
                     });
-                    setPosts(postsResponse);
+                    setPosts(postsResponse.reverse());
                 }).catch((error) => {
-                    alert("Erro ao buscar posts");
+                    Alert.alert("Erro", "Erro ao buscar posts");
                 });
             }
 
@@ -106,9 +110,10 @@ const PostList = ({ navigation }) => {
     )
 
     const loadMoreData = () => {
-        if(loading) return
+        if (loading) return
 
         setLoading(true);
+        const lista = searchTerm ? filteredPosts : posts;
         const newData = posts.slice(data.length, data.length + 1);
         setTimeout(() => {
             setData([...data, ...newData]);
@@ -116,18 +121,28 @@ const PostList = ({ navigation }) => {
         }, 1000);
     }
 
+
+    useEffect(() => {
+        const results = posts.filter(post =>
+            post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            post.author.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredPosts(results);
+    }, [searchTerm]);
+
     useEffect(() => {
         fetchPosts()
     });
 
     const handleDelete = (postId: string) => {
-        if(auth){
+        if (auth) {
             deletePostApi(postId, auth.token).then((result) => {
-                if(result.data.postId){
-                    alert("Post deletado com sucesso!");
+                if (result.data.postId) {
+                    Alert.alert("Sucesso", "Post deletado com sucesso!");
                 }
             }).catch((error) => {
-                alert("Erro ao deletar turma");
+                Alert.alert("Erro", "Erro ao deletar post");
             });
         }
     }
@@ -145,8 +160,17 @@ const PostList = ({ navigation }) => {
                         : null
                 }
 
+                <View style={styles.containerBuscar}>
+                    <TextInput
+                        style={styles.buscar}
+                        placeholder="Buscar..."
+                        value={searchTerm}
+                        onChangeText={setSearchTerm}
+                    />
+                </View>
+
                 <FlatList
-                    data={posts}
+                    data={searchTerm ? filteredPosts : posts}
                     keyExtractor={(item) => item.id}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
@@ -238,6 +262,20 @@ const styles = StyleSheet.create({
     },
     deleteButton: {
         backgroundColor: "#ba0606"
+    },
+    containerBuscar: {
+        flexDirection: "row",
+        width: "100%",
+        alignItems: "center",
+    },
+    buscar: {
+        height: 40,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginBottom: 12,
+        width: "100%",
     }
 });
 

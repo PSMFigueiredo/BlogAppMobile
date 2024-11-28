@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import PostList from "./PostList";
-import {Text, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
+import {Text, TextInput, TouchableOpacity, View, StyleSheet, Alert} from "react-native";
 import Header from "../components/Header/header";
 
 const EditPostScreen = ({ route, navigation }) => {
@@ -28,7 +28,7 @@ const EditPostScreen = ({ route, navigation }) => {
 
     const handleSubmit = async () => {
         if (!title.trim() || !content.trim()){
-            alert('Por favor, preencha todos os campos');
+            Alert.alert("Aviso", 'Por favor, preencha todos os campos');
             return
         }
 
@@ -39,11 +39,10 @@ const EditPostScreen = ({ route, navigation }) => {
                 userId: author,
             });
 
-            alert('Post atualizado com sucesso!');
+            Alert.alert("Sucesso", 'Post atualizado com sucesso!');
             navigation.navigate('PostList')
         } catch (error) {
-            console.error('Erro ao atualizar o post', error);
-            alert('Erro ao atualizar o post. Tente novamente.');
+            Alert.alert("Erro", 'Erro ao atualizar o post. Tente novamente.');
         }
     };
 

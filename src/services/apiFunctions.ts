@@ -16,9 +16,13 @@ export const createStudentApi = async (body: object) => {
     }
 };
 
-export const updateStudentApi = async (id: string, body: object) => {
+export const updateStudentApi = async (id: string, token: string, body: object) => {
     try {
-        const response = await api.put(`students/${id}`, body);
+        const response = await api.put(`students/${id}`, body, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Ocorreu um erro:', error);
@@ -80,9 +84,13 @@ export const createProfessorApi = async (body: object) => {
     }
 };
 
-export const updateProfessorApi = async (id: string, body: object) => {
+export const updateProfessorApi = async (id: string, token: string, body: object) => {
     try {
-        const response = await api.put(`professors/${id}`, body);
+        const response = await api.put(`professors/${id}`, body, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Ocorreu um erro:', error);

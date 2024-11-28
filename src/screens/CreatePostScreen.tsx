@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, TextInput, TouchableOpacity, View, StyleSheet, ScrollView, Switch } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, StyleSheet, ScrollView, Switch, Alert } from "react-native";
 import Header from "../components/Header/header";
 import { Picker } from "@react-native-picker/picker";
 import { useAuth } from "../Context/authContext";
@@ -45,7 +45,7 @@ const CreatePostScreen = ({ navigation, route }) => {
                 };
                 setProfessor(professorResponse);
             }).catch((error) => {
-                alert("Erro ao buscar dados");
+                Alert.alert("Erro", "Erro ao buscar dados");
             });
         }
     };
@@ -56,7 +56,7 @@ const CreatePostScreen = ({ navigation, route }) => {
                 const turmasResponse = result.data.classes;
                 setTurmas(turmasResponse);
             }).catch((error) => {
-                alert("Error: " + error)
+                Alert.alert("Error", "Erro ao buscar turmas");
             });
         }
     };
@@ -80,15 +80,15 @@ const CreatePostScreen = ({ navigation, route }) => {
 
     const isFormValid = () => {
         if (!title.trim()) {
-            alert('Por favor, preencha o campo título');
+            Alert.alert("Aviso", 'Por favor, preencha o campo título');
             return false;
         }
         if (!content.trim()) {
-            alert('Por favor, preencha o campo conteúdo');
+            Alert.alert("Aviso", 'Por favor, preencha o campo conteúdo');
             return false;
         }
         if (!turma || turma == "vazio") {
-            alert('Por favor, preencha o campo Turma');
+            Alert.alert("Aviso", 'Por favor, preencha o campo Turma');
             return false;
         }
 
@@ -109,11 +109,11 @@ const CreatePostScreen = ({ navigation, route }) => {
                     published: published
                 }, auth.token).then((result) => {
                     if (result.data.postId) {
-                        alert("Post atualizado com sucesso!");
+                        Alert.alert("Post atualizado com sucesso!");
                         navigation.navigate("Feed");
                     }
                 }).catch((error) => {
-                    alert("Não foi possível atualizar o post")
+                    Alert.alert("Não foi possível atualizar o post")
                 });
             } else {
                 createPostApi({
@@ -124,11 +124,11 @@ const CreatePostScreen = ({ navigation, route }) => {
                     published: published
                 }, auth.token).then((result) => {
                     if (result.data.postId) {
-                        alert("Post criado com sucesso!");
+                        Alert.alert("Post criado com sucesso!");
                         navigation.navigate("Feed");
                     }
                 }).catch((error) => {
-                    alert("Não foi possível criar o post")
+                    Alert.alert("Não foi possível criar o post")
                 });
             }
         }
@@ -152,7 +152,7 @@ const CreatePostScreen = ({ navigation, route }) => {
                     value={content}
                     onChangeText={setContent}
                     multiline
-                    numberOfLines={4}
+                    numberOfLines={200}
                 />
                 <Text style={styles.label}>Turma</Text>
                 <Picker

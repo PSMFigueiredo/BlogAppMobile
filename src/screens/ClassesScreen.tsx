@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, TouchableOpacity, View, FlatList, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, View, FlatList, StyleSheet, Alert } from "react-native";
 import PostDetailScreen from "./PostDetailScreen";
 import Header from "../components/Header/header";
 import { MaterialIcons } from '@expo/vector-icons'
@@ -16,9 +16,9 @@ const ClassesScreen = ({ navigation }) => {
         if(auth){
             getClassesApi(auth.token).then((result) => {
                 const turmasResponse = result.data.classes;
-                setTurmas(turmasResponse);
+                setTurmas(turmasResponse.reverse());
             }).catch((error) => {
-                alert("Error: " + error)
+                Alert.alert("Erro" + error)
             });
         }
     };
@@ -27,10 +27,10 @@ const ClassesScreen = ({ navigation }) => {
         if(auth){
             deleteClassApi(turmaId, auth.token).then((result) => {
                 if(result.data.classId){
-                    alert("Turma deletada com sucesso!");
+                    Alert.alert("Sucesso", "Turma deletada com sucesso!");
                 }
             }).catch((error) => {
-                alert("Erro ao deletar turma");
+                Alert.alert("Error", "Erro ao deletar turma");
             });
         }
     }

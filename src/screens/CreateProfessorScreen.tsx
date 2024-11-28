@@ -38,29 +38,26 @@ const CreateProfessorScreen: React.FC = ({ navigation, route}) => {
 
     const handleUpdateAccount = () => {
         if (name == '' || name == undefined || name == null) {
-            alert("Preencha o campo: Nome");
+            Alert.alert("Aviso", "Preencha o campo: Nome");
         }
         if (email == '' || email == undefined || email == null) {
-            alert("Preencha o campo: Email");
-        }
-        if (password == '' || password == undefined || password == null) {
-            alert("Preencha o campo: Senha");
+            Alert.alert("Aviso", "Preencha o campo: Email");
         }
         if (auth?.user.role == "PROFESSOR") {
             if (registerNumber == '' || registerNumber == undefined || registerNumber == null) {
-                alert("Preencha o campo: Nº de registro");
+                Alert.alert("Aviso", "Preencha o campo: Nº de registro");
             }
             if (item) {
-                updateProfessorApi(item.id, {
-                    professorNumber: registerNumber,
+                updateProfessorApi(item.id, auth.token, {
+                    professorNumber: Number(registerNumber),
                     name: name,
                     email: email,
                     password: password
                 }).then((result) => {
-                    alert(`Professor atualizado com sucesso!`);
+                    Alert.alert("Sucesso", `Professor atualizado com sucesso!`);
                     navigation.navigate('Professores');
                 }).catch((error) => {
-                    alert("Não foi possível atualizar o cadastro de professor");
+                    Alert.alert("Erro", "Não foi possível atualizar o cadastro de professor");
                 })
             }else{
                 createProfessorApi({
@@ -69,10 +66,10 @@ const CreateProfessorScreen: React.FC = ({ navigation, route}) => {
                     email: email,
                     password: password
                 }).then((result) => {
-                    alert(`Professor cadastrado com sucesso!`);
+                    Alert.alert("Sucesso", `Professor cadastrado com sucesso!`);
                     navigation.navigate('Professores');
                 }).catch((error) => {
-                    alert("Não foi possível cadastrar o professor");
+                    Alert.alert("Erro", "Não foi possível cadastrar o professor");
                 })
             }
         }

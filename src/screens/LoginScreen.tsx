@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from "react-native";
 import Header from "../components/Header/header";
 import { getProfessorByUserApi, userLoginApi } from "../services/apiFunctions";
 import { useAuth } from "../Context/authContext";
@@ -18,10 +18,10 @@ const LoginScreen: React.FC = ({ navigation }) => {
 
     const handleLogin = () => {
         if (email == '' || email == undefined || email == null) {
-            alert("Preencha o campo: Email");
+            Alert.alert("Aviso", "Preencha o campo: Email");
         }
         if (password == '' || password == undefined || password == null) {
-            alert("Preencha o campo: Senha");
+            Alert.alert("Aviso", "Preencha o campo: Senha");
         }
 
         userLoginApi({
@@ -48,7 +48,7 @@ const LoginScreen: React.FC = ({ navigation }) => {
             navigation.navigate("PostList");
 
         }).catch((error) => {
-            alert("Não foi possível realizar o login");
+            Alert.alert("Erro", "Não foi possível realizar o login");
         });
 
 
@@ -56,7 +56,7 @@ const LoginScreen: React.FC = ({ navigation }) => {
         // if (email === 'admin@example.com' && password === '123456') {
         //     navigation.navigate('PostList');
         // } else {
-        //     alert('Login inválido!');
+        //     Alert.alert('Login inválido!');
         // }
     };
 

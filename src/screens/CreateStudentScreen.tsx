@@ -60,43 +60,43 @@ const CreateStudentScreen: React.FC = ({ navigation, route}) => {
 
     const handleUpdateAccount = () => {
         if (name == '' || name == undefined || name == null) {
-            alert("Preencha o campo: Nome");
+            Alert.alert("Aviso", "Preencha o campo: Nome");
         }
         if (email == '' || email == undefined || email == null) {
-            alert("Preencha o campo: Email");
-        }
-        if (password == '' || password == undefined || password == null) {
-            alert("Preencha o campo: Senha");
+            Alert.alert("Aviso", "Preencha o campo: Email");
         }
             if (registerNumber == '' || registerNumber == undefined || registerNumber == null) {
-                alert("Preencha o campo: Nº de registro");
+                Alert.alert("Aviso", "Preencha o campo: Nº de registro");
             }
-            if (item) {
-                updateStudentApi(item.id, {
-                    ra: registerNumber,
-                    birthDate: birthDate,
-                    name: name,
-                    email: email,
-                    password: password
-                }).then((result) => {
-                    alert(`Aluno atualizado com sucesso!`);
-                    navigation.navigate('Alunos');
-                }).catch((error) => {
-                    alert("Não foi possível atualizar o cadastro de aluno");
-                })
-            }else{
-                createStudentApi({
-                    ra: registerNumber,
-                    birthDate: birthDate,
-                    name: name,
-                    email: email,
-                    password: password
-                }).then((result) => {
-                    alert(`Aluno cadastrado com sucesso!`);
-                    navigation.navigate('Alunos');
-                }).catch((error) => {
-                    alert("Não foi possível cadastrar o aluno");
-                })
+            if(auth){
+
+                if (item) {
+                    updateStudentApi(item.id, auth.token, {
+                        ra: registerNumber,
+                        birthDate: birthDate,
+                        name: name,
+                        email: email,
+                        password: password
+                    }).then((result) => {
+                        Alert.alert("Sucesso", `Aluno atualizado com sucesso!`);
+                        navigation.navigate('Alunos');
+                    }).catch((error) => {
+                        Alert.alert("Erro", "Não foi possível atualizar o cadastro de aluno");
+                    })
+                }else{
+                    createStudentApi({
+                        ra: registerNumber,
+                        birthDate: birthDate,
+                        name: name,
+                        email: email,
+                        password: password
+                    }).then((result) => {
+                        Alert.alert("Sucesso", `Aluno cadastrado com sucesso!`);
+                        navigation.navigate('Alunos');
+                    }).catch((error) => {
+                        Alert.alert("Erro", "Não foi possível cadastrar o aluno");
+                    })
+                }
             }
     };
 

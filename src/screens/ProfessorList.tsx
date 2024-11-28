@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, TouchableOpacity, View, FlatList, StyleSheet, ListRenderItem } from "react-native";
+import { Text, TouchableOpacity, View, FlatList, StyleSheet, ListRenderItem, Alert } from "react-native";
 import PostDetailScreen from "./PostDetailScreen";
 import Header from "../components/Header/header";
 import { MaterialIcons } from '@expo/vector-icons'
@@ -33,9 +33,9 @@ const ProfessorList = ({ navigation }) => {
                             }
                         )
                     });
-                    setProfessors(professorsResponse);
+                    setProfessors(professorsResponse.reverse());
                 }).catch((error) => {
-                    alert("Erro ao buscar professores");
+                    Alert.alert("Erro", "Erro ao buscar professores");
                 });
             }
         }
@@ -92,10 +92,10 @@ const ProfessorList = ({ navigation }) => {
         if(auth){
             deleteProfessorApi(professorId, auth.token).then((result) => {
                 if(result.data.postId){
-                    alert("Professor deletado com sucesso!");
+                    Alert.alert("Sucesso", "Professor deletado com sucesso!");
                 }
             }).catch((error) => {
-                alert("Erro ao deletar professor");
+                Alert.alert("Erro", "Erro ao deletar professor");
             });
         }
     }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Text, TextInput, TouchableOpacity, View, StyleSheet, ScrollView } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, StyleSheet, ScrollView, Alert } from "react-native";
 import Header from "../components/Header/header";
 import { Picker } from "@react-native-picker/picker";
 import { useAuth } from "../Context/authContext";
@@ -23,7 +23,7 @@ const CreateClassScreen = ({ navigation, route }) => {
 
     const isFormValid = () => {
         if (!name.trim()) {
-            alert('Por favor, preencha o campo nome');
+            Alert.alert("Aviso", 'Por favor, preencha o campo nome');
             return false;
         }
 
@@ -39,19 +39,19 @@ const CreateClassScreen = ({ navigation, route }) => {
             editClassApi(item.id, {
                 name: name,
             }, auth.token).then((result) => {
-                alert("Turma editada com sucesso!");
+                Alert.alert("Sucesso", "Turma editada com sucesso!");
                 navigation.navigate("Turmas");
             }).catch((error) => {
-                alert("Erro ao editar turma");
+                Alert.alert("Erro", "Erro ao editar turma");
             })
             :
             createClassApi({
                 name: name,
             }, auth.token).then((result) => {
-                alert("Turma criada com sucesso!");
+                Alert.alert("Sucesso", "Turma criada com sucesso!");
                 navigation.navigate("Turmas");
             }).catch((error) => {
-                alert("Erro ao criar turma");
+                Alert.alert("Erro", "Erro ao criar turma");
             });
         }
 

@@ -43,17 +43,17 @@ const CreateAccountScreen: React.FC = ({navigation}) => {
 
     const handleCreateAccount = () => {
         if(name == '' || name == undefined || name == null){
-            alert("Preencha o campo: Nome");
+            Alert.alert("Aviso", "Preencha o campo: Nome");
         }
         if(email == '' || email == undefined || email == null){
-            alert("Preencha o campo: Email");
+            Alert.alert("Aviso", "Preencha o campo: Email");
         }
         if(password == '' || password == undefined || password == null){
-            alert("Preencha o campo: Senha");
+            Alert.alert("Aviso", "Preencha o campo: Senha");
         }
         if(role == "PROFESSOR"){
             if(registerNumber == '' || registerNumber == undefined || registerNumber == null) {
-                alert("Preencha o campo: Nº de registro");
+                Alert.alert("Aviso", "Preencha o campo: Nº de registro");
             }
             createProfessorApi({
                 professorNumber: registerNumber,
@@ -61,14 +61,14 @@ const CreateAccountScreen: React.FC = ({navigation}) => {
                 email: email,
                 password: password
             }).then((result) => {
-                alert(`Usuário criado com sucesso!`);
+                Alert.alert("Aviso", `Usuário criado com sucesso!`);
                 navigation.navigate('Login');
             }).catch((error) => {
-                alert("Não foi possível criar o usuário");
+                Alert.alert("Aviso", "Não foi possível criar o usuário");
             })
         }else{
             if(registerNumber == '' || registerNumber == undefined || registerNumber == null) {
-                alert("Preencha o campo: RA");
+                Alert.alert("Aviso", "Preencha o campo: RA");
             }
             createStudentApi({
                 ra: registerNumber,
@@ -77,10 +77,10 @@ const CreateAccountScreen: React.FC = ({navigation}) => {
                 email: email,
                 password: password
             }).then((result) => {
-                alert('Usuário criado com sucesso!');
+                Alert.alert("Sucesso", 'Usuário criado com sucesso!');
                 navigation.navigate('Login');
             }).catch((error) => {
-                alert("Não foi possível criar o usuário");
+                Alert.alert("Erro", "Não foi possível criar o usuário");
             })
         }
     };
