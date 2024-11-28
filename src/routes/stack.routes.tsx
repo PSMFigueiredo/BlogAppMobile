@@ -18,7 +18,6 @@ export default function StackRoutes() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="CreateAccountScreen" component={CreateAccountScreen} />
             <Stack.Screen name="PostList" component={DrawerRoutes} />
-            <Stack.Screen name="Editar Post" component={EditPostScreen} />
             <Stack.Screen name="Criar Post" component={CreatePostScreen} />
             <Stack.Screen name="Criar Turma" component={CreateClassScreen} />
             <Stack.Screen name="Ver Post" component={PostDetailScreen} />
