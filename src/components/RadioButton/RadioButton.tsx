@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 const RadioButton: React.FC = ({ options, selectedValue, onChange, style }) => {
     return (
         <View style={[styles.container, style]}>
-            {options.map((option) => {
+            {options.map((option: any) => {
                 let active = option.value == selectedValue;
                 return (
                     <TouchableOpacity 
